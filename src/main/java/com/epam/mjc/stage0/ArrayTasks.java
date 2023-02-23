@@ -114,6 +114,51 @@ public class ArrayTasks {
         return positiveNumbers;
     }
 
+
+    public void mergeSort(int[] arr) {
+        int n = arr.length;
+        if (n == 1) return;
+
+        int mid = n / 2;
+        int[] l = new int[mid];
+        int[] r = new int[n - mid];
+
+        for (int i = 0; i < mid; i++)
+            l[i] = arr[i];
+        for (int i = 0; i < n - mid; i++)
+            r[i] = arr[i + mid];
+
+        mergeSort(l);
+        mergeSort(r);
+        merge(arr, l, r);
+    }
+
+    private void merge(int[] arr, int[] l, int[] r) {
+        int left = l.length;
+        int right = r.length;
+        int i = 0;
+        int j = 0;
+        int idx = 0;
+
+        while (i < left && j < right) {
+            if (l[i] < r[j]) {
+                arr[idx] = l[i];
+                i++;
+                idx++;
+            } else {
+                arr[idx] = r[j];
+                j++;
+                idx++;
+            }
+        }
+
+        for (int ll = i; ll < left; ll++)
+            arr[idx++] = l[ll];
+
+        for (int rr = j; rr < right; rr++)
+            arr[idx++] = r[rr];
+    }
+
     /**
      * Return a sorted, ragged, two-dimensional int[][] array following these rules:
      * Incoming one-dimensional arrays must be arranged in ascending order of their length;
@@ -124,8 +169,32 @@ public class ArrayTasks {
      * arr = [[3, 1, 2,], [3,2]] -> [[2, 3], [1, 2, 3]]
      * arr = [[5, 4], [7]]       -> [[7], [4, 5]]
      */
-    public int[][] sortRaggedArray(int[][] arr) {
 
-        return new int[][]{{1}};
+
+    public int[][] sortRaggedArray(int[][] arr) {
+        int i = 0;
+        for (int[] array :
+                arr) {
+            mergeSort(array);
+        }
+        int pos = 0;
+        int iteration = 0;
+
+        while (iteration < arr.length) {
+            int min = arr[iteration].length;
+            for(int j = iteration; j < arr.length; j++){
+                if (min > arr[j].length) {
+                    pos = j;
+                    min = arr[j].length;
+                }
+
+            }
+            int[] mid = arr[iteration];
+            arr[iteration] = arr[pos];
+            arr[pos] = mid;
+            iteration++;
+
+        }
+        return arr;
     }
 }
